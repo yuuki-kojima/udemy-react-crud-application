@@ -1,14 +1,16 @@
 import {
-  GET_ASSETS_REQUEST, GET_ASSETS_SUCCESS, GET_ASSETS_FAILURE, INITIALIZE_SUCCESS
+  GET_ASSETS_REQUEST, GET_ASSETS_SUCCESS, GET_ASSETS_FAILURE
 } from '../actions'
 
 const initialState = {
   isFetching: true,
   assets: [],
   offset: 0,
-  rarity: "",
+  rarity: "All",
   hasMore: true,
-  mode: 'Hero'
+  mode: 'Hero',
+  sortKey: 'listing_date',
+  currency: 'Ethereum',
 }
 
 export default (state = [initialState], action) => {
@@ -22,7 +24,9 @@ export default (state = [initialState], action) => {
           offset: action.offset,
           rarity: action.rarity,
           mode: action.mode,
-          hasMore: action.hasMore
+          hasMore: action.hasMore,
+          sortKey: action.sortKey,
+          currency: action.currency,
         }
       ]
 
@@ -35,7 +39,9 @@ export default (state = [initialState], action) => {
           offset: action.offset,
           rarity: action.rarity,
           mode: action.mode,
-          hasMore: action.hasMore
+          hasMore: action.hasMore,
+          sortKey: action.sortKey,
+          currency: action.currency,
         }
       ]
 
@@ -45,16 +51,6 @@ export default (state = [initialState], action) => {
         {
           isFetching: false,
           error: action.error
-        }
-      ]
-
-    case INITIALIZE_SUCCESS:
-      return[
-        ...state,
-        {
-          isFetching: true,
-          offset: action.offset,
-          mode: action.mode
         }
       ]
 

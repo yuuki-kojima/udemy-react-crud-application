@@ -1,26 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+// Material-UI
+import { createMuiTheme, MuiThemeProvider  } from '@material-ui/core/styles';
+import indigo from '@material-ui/core/colors/indigo';
+
+//Router
+import {BrowserRouter as Router} from "react-router-dom";
+
+//Redux
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk'
-
-import './index.css';
 import reducer from './reducers';
-import AssetsIndex from './components/assets_index';
-import * as serviceWorker from './serviceWorker';
-import withTracker from './components/withTracker'
+
+//Redux-thunk
+import thunk from 'redux-thunk'
 
 const store = createStore(reducer, applyMiddleware(thunk))
 
+// Material-UIテーマカスタマイズ
+const theme = createMuiTheme({
+  palette: {
+    type: 'light', // light or dark
+    primary: indigo, // primaryのカラー
+  },
+  typography: {
+    useNextVariants: true,
+  },
+});
+
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
-      <Switch>
-        <Route path='/' exact component={withTracker(AssetsIndex)}/>
-        <Route exact component={withTracker(AssetsIndex)}/>
-      </Switch>
-    </Router>
+    <MuiThemeProvider theme={theme} >
+      <Router>
+        <App />
+      </Router>
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('root')
 );
