@@ -6,27 +6,37 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Link from '@material-ui/core/Link';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
 
-const AssetList = ({assets, currency}) => {
-  const referrerAddress = '0x4e66c8fea449D7aC5C2a55061c0FCf24C4106A9c'
+const AssetList = ({assets, currency, assetName, onClick}) => {
+  const referrerAddress = '0x054019B40bE415d0E2B833B5BaD0a7491D4178b0'
   const SetList = {
     'mch': (asset) => {
       return(
         <GridListTile
           key={asset.token_id}
           style={{
-            width: 185,
+            width: 180,
             height: 185,
             margin: 4,
           }}
         >
-          <Link href={asset.permalink + '?ref=' +referrerAddress} target='_blank'>
+          <div>
             <img className="asset-image" src={asset.image_url} alt={asset.name} />
             <GridListTileBar
-              title={<span>{asset.name}</span>}
+              title={<Link href={asset.permalink + '?ref=' +referrerAddress} target='_blank'>
+                       <span className='asset-name' style={{color:'white'}}>{asset.name}</span>
+                     </Link>}
               subtitle={<span>lv{asset.lv} {asset.rarity}<br />{setPrice[currency](asset.current_price)}</span>}
+              actionIcon={
+                assetName ? null :
+                <IconButton onClick={onClick}>
+                  <SearchIcon />
+                </IconButton>
+              }
             />
-          </Link>
+          </div>
         </GridListTile>
       )
     },
@@ -34,7 +44,7 @@ const AssetList = ({assets, currency}) => {
 
   return (
     <GridList
-      style={{justifyContent: 'center'}}
+      style={{justifyContent: 'center', marginTop: 30}}
     >
       {
         assets.map( asset => (

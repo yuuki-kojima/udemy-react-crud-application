@@ -1,13 +1,44 @@
 import React, {Component} from 'react';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
+import queryString from 'query-string'
+
+// Actions
+import { getAssets } from '../actions'
+
+// Components
 import AssetList from '../components/AssetList'
 import NoResult from '../components/NoResult'
 
 class AssetLists extends Component {
 
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  async componentDidMount() {
+    const { mode, assetName }  = queryString.parse(this.props.location.search)
+    const assetType = this.props.router.location.pathname.slice(8)
+    const { setInitialPayload } = await import('../utils/assetTypeMethods/' + assetType)
+    this.props.getAssets(setInitialPayload(assetType, mode, assetName))
+  }
+
+  handleClick(e){
+    const assetType = this.props.router.location.pathname.slice(8)
+    const { mode } = this.props.assets.payload
+    const target = e.target.parentElement.parentElement.parentElement.parentElement
+    if(target.getElementsByClassName('asset-name').length !== 0 ){
+      var assetName = target.getElementsByClassName('asset-name')[0].innerHTML
+    } else {
+      assetName = target.parentElement.getElementsByClassName('asset-name')[0].innerHTML
+    }
+    this.props.history.push('/' + assetType+ '?mode=' + mode + '&assetName=' + assetName)
+  }
+
   render(){
-    const {assets, currency, isFetching} = this.props.state
+    const {assets, isFetching, payload} = this.props.assets
     const length = assets.length
 
     return (
@@ -17,7 +48,9 @@ class AssetLists extends Component {
           ? <NoResult />
           : <AssetList
               assets={assets}
-              currency={currency}
+              currency={payload.currency}
+              assetName={payload.assetName}
+              onClick={this.handleClick}
             />
       }
       </React.Fragment>
@@ -27,9 +60,9 @@ class AssetLists extends Component {
 }
 
 const mapStateToProps = state => {
-  const length = state.assets.length
-  const currenstState = state.assets[length - 1]
-  return {state: currenstState}
+  return state
 }
 
-export default connect(mapStateToProps)(AssetLists)
+const mapDispatchToProps = ({ getAssets })
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AssetLists))

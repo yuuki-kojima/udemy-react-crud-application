@@ -3,18 +3,17 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-const AppTab = ({mode, onChange}) => (
+const TabComponent = ({mode, values, onChange}) => (
     <Paper square>
       <Tabs
-        value={mode}
+        value={ mode ? mode : values[0]}
         textColor="primary"
         variant="fullWidth"
         onChange={onChange}
       >
-        <Tab value="Hero" label="Hero" />
-        <Tab value="Extension" label="Extension" />
+        {values.map( (value, index) => <Tab key={index} value={value} label={value} />)}
       </Tabs>
     </Paper>
 )
 
-export default AppTab
+export default TabComponent

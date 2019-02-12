@@ -6,53 +6,35 @@ const initialState = {
   isFetching: true,
   assets: [],
   offset: 0,
-  rarity: "All",
   hasMore: true,
-  mode: 'Hero',
-  sortKey: 'listing_date',
-  currency: 'Ethereum',
+  payload: {},
 }
 
-export default (state = [initialState], action) => {
+export default (state = initialState, action, history) => {
   switch (action.type) {
     case GET_ASSETS_REQUEST:
-      return [
+      return {
         ...state,
-        {
-          isFetching: true,
-          assets: action.assets,
-          offset: action.offset,
-          rarity: action.rarity,
-          mode: action.mode,
-          hasMore: action.hasMore,
-          sortKey: action.sortKey,
-          currency: action.currency,
-        }
-      ]
+        isFetching: true,
+        assets: action.assets,
+        payload: action.payload,
+      }
 
     case GET_ASSETS_SUCCESS:
-      return [
+      return {
         ...state,
-        {
-          isFetching: false,
-          assets: action.assets,
-          offset: action.offset,
-          rarity: action.rarity,
-          mode: action.mode,
-          hasMore: action.hasMore,
-          sortKey: action.sortKey,
-          currency: action.currency,
-        }
-      ]
+        isFetching: false,
+        assets: action.assets,
+        offset: action.offset,
+        hasMore: action.hasMore,
+      }
 
     case GET_ASSETS_FAILURE:
-      return [
+      return {
         ...state,
-        {
-          isFetching: false,
-          error: action.error
-        }
-      ]
+        isFetching: false,
+        error: action.error,
+      }
 
     default:
       return state

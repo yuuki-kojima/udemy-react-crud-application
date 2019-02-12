@@ -11,17 +11,20 @@ import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
 
-// Material-UIアイコン取得
+// Material-UI Icons
 import InfoIcon from '@material-ui/icons/Info';
 import HomeIcon from '@material-ui/icons/Home';
 import * as icons from '../utils/images'
 
-// Route関連
+// Route
 import { Link } from 'react-router-dom';
 
-// コンポーネントの準備
+// Components
 import ResponsiveDrawerListItem from './ResponsiveDrawerListItem';
 import ResponsiveDrawerListItemWithAvatar from './ResponsiveDrawerListItemWithAvatar';
+
+// Utils
+import * as assetTypes from '../utils/AssetTypes'
 
 // 設定値
 const drawerWidth = 240;
@@ -117,12 +120,20 @@ class ResponsiveDrawer extends React.Component {
         </List>
         <List>
           <ResponsiveDrawerListItemWithAvatar
-            to="/mch"
+            to={'/assets/' + assetTypes.MY_CRYPT_HEROES}
             onClick={this.closeDrawerNav}
-            img={icons.MCH_ICON}
+            img={icons.MCH_HERO_ICON}
             text="MyCryptHeroes"
           />
         </List>
+        {/*<List>
+          <ResponsiveDrawerListItemWithAvatar
+            to={'#'}
+            onClick={this.closeDrawerNav}
+            img={icons.MCH_EXTENSION_ICON}
+            text="MyCryptHeroes:Ex"
+          />
+        </List>*/}
       </div>
     );
 

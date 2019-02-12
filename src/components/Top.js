@@ -2,8 +2,10 @@ import React from 'react';
 import * as images from '../utils/images'
 import { Link as RouterLink } from 'react-router-dom'
 
+//Utils
+import * as assetTypes from '../utils/AssetTypes'
+
 import { withStyles } from '@material-ui/core/styles';
-// import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -23,7 +25,7 @@ const styles = theme => ({
 
 const Top = ({classes}) => (
   <React.Fragment>
-    <Link component={RouterLink} to="/mch">
+    <Link component={RouterLink} to={'/assets/' + assetTypes.MY_CRYPT_HEROES}>
       <Card className={classes.card}>
         <CardActionArea>
           <CardMedia

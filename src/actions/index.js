@@ -1,5 +1,4 @@
 import axios from 'axios'
-import * as address from '../utils/contractAddress';
 import * as apiKey from '../utils/apiKey';
 import { toYen } from '../utils/currency'
 
@@ -16,29 +15,21 @@ import { toYen } from '../utils/currency'
 
 
 export const GET_ASSETS_REQUEST = 'GET_ASSETS_REQUEST'
-const getAssetsRequest = (assets, rarity, offset, mode, sortKey, currency) => {
+const getAssetsRequest = (assets, payload) => {
   return{
     type: GET_ASSETS_REQUEST,
     assets,
-    rarity,
-    offset,
-    mode,
-    sortKey,
-    currency,
+    payload,
   }
 }
 
 export const GET_ASSETS_SUCCESS = 'GET_ASSETS_SUCCESS'
-const getAssetsSuccess = (assets, offset, rarity, hasMore, mode, sortKey, currency) => {
+const getAssetsSuccess = (assets, offset, hasMore,) => {
   return{
     type: GET_ASSETS_SUCCESS,
     assets,
     offset,
-    rarity,
     hasMore,
-    mode,
-    sortKey,
-    currency,
   }
 }
 
@@ -50,13 +41,7 @@ const getAssetsFailure = (error) => {
   }
 }
 
-axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-
-const ROOT_URL = 'https://api.opensea.io/api/v1'
-const QUERY_MCHH = '&on_sale=true&order_by=listing_date&order_direction=desc'
-const limit = 20
-
-export const getAssets = ({rarity, mode, sortKey, currency}) => async(dispatch, getState) => {
+export const getAssets = (payload) => async(dispatch, getState) => {
   // const { orders, count } = await seaport.api.getOrders({
   //   asset_contract_address: '0x273f7f8e6489682df756151f5525576e322d51a3',
   //   side: OrderSide.Sell,
@@ -64,37 +49,38 @@ export const getAssets = ({rarity, mode, sortKey, currency}) => async(dispatch, 
   // })
   // console.log(orders)
 
-  const length = getState().assets.length
+  const { getQuery, setProperty } = await import('../utils/assetTypeMethods/' + payload.type)
+  let limit = 20
   let zeroSellOrderLength = 0
-  let assets = getState().assets[length - 1].assets
-  let offset = getState().assets[length - 1].offset
-  const pastRarity = getState().assets[length - 1].rarity
-  const pastMode = getState().assets[length - 1].mode
-  const pastSortKey = getState().assets[length - 1].sortKey
-  const pastCurrency = getState().assets[length - 1].currency
+  let assets = getState().assets.assets
+  let offset = getState().assets.offset
+
+  if(payload.assetName) {limit = null}
+
+  const payloadKeys = Object.keys(payload)
+  const changePayload = payloadKeys.map(key => {
+    return payload[key] === getState().assets.payload[key]
+  })
+  const changeMode = () => {
+    return payload.mode === getState().assets.payload.mode
+  }
 
   //現在のStateと検索条件が変わる場合はAssetsとOffsetを初期化
-  if(pastRarity !== rarity
-    || pastMode !== mode
-    || pastSortKey !== sortKey
-    || pastCurrency !== currency){
+  if(changePayload.includes(false)){
     assets = []
     offset = 0
   }
-
-  let contractAddress = (mode === 'Hero') ? address.MCH_HERO : address.MCH_EXTENSION
-  let query = `${ROOT_URL}/assets?asset_contract_address=${contractAddress}${QUERY_MCHH}`
-
-  if(rarity && rarity !== 'All'){
-    query += query + '&trait__string__rarity=' + rarity
+  if(changeMode === false){
+    payload.assetName = null
   }
-  query += query + '&offset=' + offset +  '&limit=' + limit
 
-  dispatch(getAssetsRequest(assets, rarity, offset, mode, sortKey, currency))
+  const query = getQuery(payload, offset, limit)
+
+  dispatch(getAssetsRequest(assets, payload))
   try {
 
-    // TestUse
-    // query = 'https://api.opensea.io/api/v1/assets?asset_contract_address=0x273f7f8e6489682df756151f5525576e322d51a3&on_sale=true&order_by=num_sales&order_direction=desc&limit=30'
+    // // TestUse
+    // const query = 'https://api.opensea.io/api/v1/assets?asset_contract_address=0x273f7f8e6489682df756151f5525576e322d51a3&on_sale=true&order_by=sell_orders&order_direction=desc&limit=30'
     // const response = await axios.get(query)
     //
     // console.log(response)
@@ -104,6 +90,7 @@ export const getAssets = ({rarity, mode, sortKey, currency}) => async(dispatch, 
     // })
     // console.log(testobj)
 
+    axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     const response = await axios.get(query, {headers: {'X-API-KEY': apiKey.OPENSEA} })
 
     // offset === 0 の場合、sell_order.length === 0 を除外
@@ -117,38 +104,20 @@ export const getAssets = ({rarity, mode, sortKey, currency}) => async(dispatch, 
       return asset[1].sell_orders.length === 0
     }).length
 
-    const yen = currency === 'Yen' && await toYen()
-
-    const setPrice = {
-      'Ethereum': price => price,
-      'Yen': price => Math.round(price * yen).toString().replace(/(\d)(?=(\d{3})+$)/g , '$1,'),
-    }
-
-    const responsedAssets = responsedArray.map(asset => {
-      return {
-        token_id: asset[1].token_id,
-        listing_date: asset[1].listing_date,
-        image_url: asset[1].image_thumbnail_url,
-        current_price: setPrice[currency](Math.round(asset[1].sell_orders[0].current_price / 1000000000000000000 * 10000) / 10000),
-        permalink: asset[1].permalink,
-        name: asset[1].traits.filter(trait => {
-          return trait.trait_type === mode.toLowerCase() + '_name';
-        })[0].value,
-        lv: asset[1].traits.filter(trait => {
-          return trait.trait_type === 'lv';
-        })[0].value,
-        rarity: asset[1].traits.filter(trait => {
-          return trait.trait_type === 'rarity';
-        })[0].value,
-      }
-    })
-
-    const hasMore = ( (responsedAssets.length + zeroSellOrderLength) < limit) ? false : true
+    const yen = payload.currency === 'Yen' && await toYen()
+    const responsedAssets = responsedArray.map( asset => setProperty(asset, payload, yen) )
+    const hasMore = ( (responsedAssets.length + zeroSellOrderLength) < limit || limit === null) ? false : true
 
     assets = assets.concat(responsedAssets)
     offset += limit
 
-    dispatch(getAssetsSuccess(assets, offset, rarity, hasMore, mode, sortKey, currency))
+    if(payload.assetName) {
+      assets.sort( (a, b) => {
+        return a.current_price - b.current_price
+      })
+    }
+
+    dispatch(getAssetsSuccess(assets, offset, hasMore))
   } catch (error) {
     dispatch(getAssetsFailure(error))
   }

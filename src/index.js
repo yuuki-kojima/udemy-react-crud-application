@@ -9,17 +9,29 @@ import { createMuiTheme, MuiThemeProvider  } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 
 //Router
-import {BrowserRouter as Router} from "react-router-dom";
+import { routerMiddleware, ConnectedRouter } from 'connected-react-router'
 
 //Redux
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import reducer from './reducers';
 
 //Redux-thunk
 import thunk from 'redux-thunk'
 
-const store = createStore(reducer, applyMiddleware(thunk))
+import { createBrowserHistory } from 'history'
+
+export const history = createBrowserHistory()
+
+const store = createStore(
+  reducer(history),
+  compose(
+    applyMiddleware(
+      routerMiddleware(history),
+      thunk,
+    )
+  )
+)
 
 // Material-UIテーマカスタマイズ
 const theme = createMuiTheme({
@@ -35,9 +47,9 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <Provider store={store}>
     <MuiThemeProvider theme={theme} >
-      <Router>
+      <ConnectedRouter history={history}>
         <App />
-      </Router>
+      </ConnectedRouter>
     </MuiThemeProvider>
   </Provider>,
   document.getElementById('root')

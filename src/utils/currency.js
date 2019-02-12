@@ -18,3 +18,8 @@ export const setPrice = {
   'Ethereum': (price) => 'Ξ ' + price,
   'Yen': (price) => price + '円'
 }
+
+export const culcPrice = {
+  'Ethereum': price => price,
+  'Yen': (price, yen) => Math.round(price * yen).toString().replace(/(\d)(?=(\d{3})+$)/g , '$1,'),
+}
