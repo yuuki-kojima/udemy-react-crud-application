@@ -15,26 +15,28 @@ class TabContainer extends Component {
     this.handleModeChange = this.handleModeChange.bind(this)
     this.state = {
       tabValues: [],
+      value: '',
     }
   }
 
   async componentDidMount(){
     const assetType = this.props.router.location.pathname.slice(8)
     const { tabValues } = await import('../utils/assetTypeMethods/' + assetType)
-    this.setState({tabValues: tabValues})
+    this.setState({
+      tabValues: tabValues,
+      value: assetType,
+    })
   }
 
   async handleModeChange(e, mode){
-    const assetType = this.props.router.location.pathname.slice(8)
-    this.props.history.push('/assets/' + assetType + '?mode=' + mode)
+    this.props.history.push('/assets/' + mode)
   }
 
   render(){
     const tabValues = this.state.tabValues
     if(tabValues.length > 0){
-      const { mode } = this.props.assets.payload
       return (<TabComponent
-                mode={mode}
+                mode={this.state.value}
                 values={tabValues}
                 onChange={this.handleModeChange}
               />)

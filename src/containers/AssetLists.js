@@ -19,22 +19,21 @@ class AssetLists extends Component {
   }
 
   async componentDidMount() {
-    const { mode, assetName }  = queryString.parse(this.props.location.search)
+    const { assetName }  = queryString.parse(this.props.location.search)
     const assetType = this.props.router.location.pathname.slice(8)
     const { setInitialPayload } = await import('../utils/assetTypeMethods/' + assetType)
-    this.props.getAssets(setInitialPayload(assetType, mode, assetName))
+    this.props.getAssets(setInitialPayload(assetName))
   }
 
   handleClick(e){
     const assetType = this.props.router.location.pathname.slice(8)
-    const { mode } = this.props.assets.payload
     const target = e.target.parentElement.parentElement.parentElement.parentElement
     if(target.getElementsByClassName('asset-name').length !== 0 ){
       var assetName = target.getElementsByClassName('asset-name')[0].innerHTML
     } else {
       assetName = target.parentElement.getElementsByClassName('asset-name')[0].innerHTML
     }
-    this.props.history.push('/' + assetType+ '?mode=' + mode + '&assetName=' + assetName)
+    this.props.history.push('/assets/' + assetType+ '?assetName=' + assetName)
   }
 
   render(){

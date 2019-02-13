@@ -29,13 +29,13 @@ const About = ({classes}) => (
     <div className={classes.textLeft}>
       <Paper className={classes.root} elevation={1}>
         <Typography className={classes.headline} variant="h5" component="h3">
-          What is Digital Asset Garage
+          What is "Digital Asset Online"
         </Typography>
         <Typography component="p" className={classes.paragraph}>
-          「Digital Asset Garage」はブロックチェーンで管理されたデジタルゲームアイテム（アセット）の売買情報をまとめたウェブアプリケーションです。現在は「Opensea.io」で販売されているアセットのみ扱っていますが、今後出て来るであろうデジタルアイテムマーケットの情報も統合していく予定です。
+          「Digital Asset Online」はブロックチェーンで管理されたデジタルゲームアイテム（アセット）の売買情報をまとめたウェブアプリケーションです。現在は「Opensea.io」で販売されているアセットのみ扱っていますが、今後出て来るであろうデジタルアイテムマーケットの情報も統合していく予定です。
         </Typography>
         <Typography component="p" className={classes.paragraph}>
-          "Digital Asset Garage" is a web application that summarizes sales information on digital game items (is called assets) managed in a Block Chain. Currently we deal only with assets sold under "Opensea.io", but we will also integrate information on the digital item market that will come out in the future.
+          "Digital Asset Online" is a web application that summarizes sales information on digital game items (is called assets) managed in a Block Chain. Currently we deal only with assets sold under "Opensea.io", but we will also integrate information on the digital item market that will come out in the future.
         </Typography>
       </Paper>
       <Paper className={classes.root} elevation={1}>

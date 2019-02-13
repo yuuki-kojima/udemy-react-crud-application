@@ -54,6 +54,9 @@ const styles = theme => ({
     width: 80,
     height: 80,
   },
+  dialog: {
+    WebkitOverflowScrolling: 'touch',
+  }
 })
 
 
@@ -85,6 +88,7 @@ class AssetNameList extends React.Component {
           Search for Asset Name
         </Button>
         <Dialog
+          className={classes.dialog}
           fullScreen
           open={this.state.open}
           onClose={this.handleClose}

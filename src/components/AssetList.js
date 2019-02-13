@@ -8,8 +8,21 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Link from '@material-ui/core/Link';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import { withStyles } from '@material-ui/core/styles';
 
-const AssetList = ({assets, currency, assetName, onClick}) => {
+const styles = theme => ({
+  card: {
+    width: '90vw',
+    maxWidth: 600,
+    margin: '10px auto',
+  },
+  media: {
+    width: '95%',
+    margin: '5px auto',
+  },
+})
+
+const AssetList = ({assets, currency, assetName, onClick, classes}) => {
   const referrerAddress = '0x054019B40bE415d0E2B833B5BaD0a7491D4178b0'
   const SetList = {
     'mch': (asset) => {
@@ -19,7 +32,7 @@ const AssetList = ({assets, currency, assetName, onClick}) => {
           style={{
             width: 180,
             height: 185,
-            margin: 4,
+            margin: 3,
           }}
         >
           <div>
@@ -44,7 +57,11 @@ const AssetList = ({assets, currency, assetName, onClick}) => {
 
   return (
     <GridList
-      style={{justifyContent: 'center', marginTop: 30}}
+      style={{
+        justifyContent: 'center',
+        margin: '30px 0 0 0',
+        boxSizing: 'border-box',
+      }}
     >
       {
         assets.map( asset => (
@@ -55,4 +72,4 @@ const AssetList = ({assets, currency, assetName, onClick}) => {
   )
 }
 
-export default AssetList
+export default withStyles(styles)(AssetList)

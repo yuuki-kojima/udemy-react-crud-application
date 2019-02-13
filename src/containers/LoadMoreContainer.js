@@ -18,8 +18,9 @@ class LoadMoreContainer extends Component {
 
   async handleClick(){
     const { payload } = this.props.assets
-    const { setCondition } = await import('../utils/assetTypeMethods/' + payload.type)
-    this.props.getAssets(setCondition(null, null, null, null, payload))
+    const assetType = this.props.router.location.pathname.slice(8)
+    const { setCondition } = await import('../utils/assetTypeMethods/' + assetType)
+    this.props.getAssets(setCondition(null, null, null, payload))
   }
 
   render(){

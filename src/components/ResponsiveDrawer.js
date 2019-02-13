@@ -69,6 +69,7 @@ const styles = theme => ({
     paddingTop: 65,
     width: '100%',
     overflow: 'scroll',
+    WebkitOverflowScrolling: 'touch',
   },
   title: {
     color: 'white',
@@ -126,14 +127,14 @@ class ResponsiveDrawer extends React.Component {
             text="MyCryptHeroes"
           />
         </List>
-        {/*<List>
+        <List>
           <ResponsiveDrawerListItemWithAvatar
-            to={'#'}
+            to={'/assets/' + assetTypes.MY_CRYPT_HEROES_EXTENSION}
             onClick={this.closeDrawerNav}
             img={icons.MCH_EXTENSION_ICON}
             text="MyCryptHeroes:Ex"
           />
-        </List>*/}
+        </List>
       </div>
     );
 
@@ -151,7 +152,7 @@ class ResponsiveDrawer extends React.Component {
             </IconButton>
             <Link className={classes.link} to="/">
               <Typography className={classes.title} variant="h6" noWrap>
-                Digital Asset Garage
+                Digital Asset Online
               </Typography>
             </Link>
           </Toolbar>

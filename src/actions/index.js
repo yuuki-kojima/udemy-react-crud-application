@@ -48,7 +48,6 @@ export const getAssets = (payload) => async(dispatch, getState) => {
   //   limit: 10,
   // })
   // console.log(orders)
-
   const { getQuery, setProperty } = await import('../utils/assetTypeMethods/' + payload.type)
   let limit = 20
   let zeroSellOrderLength = 0
@@ -103,7 +102,6 @@ export const getAssets = (payload) => async(dispatch, getState) => {
     zeroSellOrderLength = Object.entries(response.data.assets).filter(asset => {
       return asset[1].sell_orders.length === 0
     }).length
-
     const yen = payload.currency === 'Yen' && await toYen()
     const responsedAssets = responsedArray.map( asset => setProperty(asset, payload, yen) )
     const hasMore = ( (responsedAssets.length + zeroSellOrderLength) < limit || limit === null) ? false : true

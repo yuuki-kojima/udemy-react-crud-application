@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import { withRouter } from 'react-router';
 
-import queryString from 'query-string'
-
 // redux
 import { connect } from 'react-redux'
 
@@ -27,11 +25,10 @@ class SearchFormContainer extends Component {
 
   async componentDidMount(){
     const assetType = this.props.router.location.pathname.slice(8)
-    const { mode }  = queryString.parse(this.props.location.search)
-    const { formTypes, assetInfos, initialMode } = await import('../utils/assetTypeMethods/' + assetType)
+    const { formTypes, assetInfos } = await import('../utils/assetTypeMethods/' + assetType)
     this.setState({
       formTypes: formTypes,
-      assetInfos: mode ? assetInfos[mode] : assetInfos[initialMode],
+      assetInfos: assetInfos,
     })
   }
 
@@ -40,18 +37,17 @@ class SearchFormContainer extends Component {
     const { payload } = this.props.assets
     const { id, value } = e.target
     const { setCondition } = await import('../utils/assetTypeMethods/' + payload.type)
-    this.props.getAssets(setCondition(id, value, payload.mode, null,  payload))
+    this.props.getAssets(setCondition(id, value, null,  payload))
   }
 
   handleClick(e){
     const assetType = this.props.router.location.pathname.slice(8)
-    const { mode } = this.props.assets.payload
     if(e.target.getElementsByClassName('asset-name').length !== 0){
       var assetName = e.target.getElementsByClassName('asset-name')[0].firstChild.innerHTML
     } else {
       assetName = e.target.parentElement.parentElement.getElementsByClassName('asset-name')[0].firstChild.innerHTML
     }
-    this.props.history.push('/assets/' + assetType+ '?mode=' + mode + '&assetName=' + assetName)
+    this.props.history.push('/assets/' + assetType + '?assetName=' + assetName)
   }
 
   setValues(typeKeys, payload){

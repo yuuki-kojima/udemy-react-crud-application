@@ -4,7 +4,10 @@ import * as address from '../contractAddress';
 const ROOT_URL = 'https://api.opensea.io/api/v1'
 const QUERY_MCHH = '&order_by=listing_date&order_direction=desc'
 
-export const tabValues = ['Hero', 'Extension']
+export const tabValues = [
+  { key: 'my-crypt-heroes', value: 'Hero'},
+  { key: 'my-crypt-heroes-extension', value: 'Extension'},
+]
 
 export const formTypes = {
   rarity: [
@@ -40,7 +43,7 @@ export const getQuery = (payload, offset, limit) => {
   }
 
   if(payload.assetName){
-    query += query + '&trait__string__' + payload.mode.toLowerCase() + '_name=' + encodeURIComponent(payload.assetName) + '&offset=' + offset
+    query += query + '&trait__string__extension_name=' + encodeURIComponent(payload.assetName) + '&offset=' + offset
   } else {
     query += '&offset=' + offset +  '&limit=' + limit
   }
@@ -72,6 +75,7 @@ export const setInitialPayload = assetName => {
     sortKey: 'listing_date',
     currency: 'Ethereum',
     assetName,
+    type: 'my-crypt-heroes-extension'
   }
 }
 
@@ -81,7 +85,7 @@ export const setCondition = (id, value, assetName, payload) => {
     sortKey: id === 'sortKey' ? value : payload.sortKey,
     currency: id === 'currency' ? value : payload.currency,
     assetName: assetName ? assetName : payload.assetName,
-    type: payload.type,
+    type: 'my-crypt-heroes-extension'
   }
 }
 

@@ -33,7 +33,15 @@ class App extends Component {
           <Switch>
             <Route path='/' exact component={withTracker(Top)}/>
             <Route path='/about' exact component={withTracker(About)}/>
-            <Route path={ '/assets/' + assetTypes.MY_CRYPT_HEROES } exact component={withTracker(AssetsIndex)}/>
+            <Route
+             path={ '/assets/' + assetTypes.MY_CRYPT_HEROES }
+             exact
+             component={withTracker(AssetsIndex)}
+            />
+            <Route
+             path={ '/assets/' + assetTypes.MY_CRYPT_HEROES_EXTENSION }
+             exact
+             component={withTracker(AssetsIndex)}/>
             <Route component={withTracker(NotFound)}/>
           </Switch>
         </ResponsiveDrawer>
